@@ -7,18 +7,20 @@ A unified pipeline to download, preprocess, assess the quality, merge, and push 
 ## ✨ Features
 
 - **Download datasets from**:
-  - Hugging Face Hub (`hf`)
-  - GitHub (`github`)
-  - OPUS (`opus`)
+  - Hugging Face Hub: Supports downloading datasets in various formats from the Hugging Face Hub. Specify the dataset format and provide the required details, such as column names.
+  - GitHub : Supports downloading datasets hosted on GitHub or any publicly accessible URL. Provide the source URL and the target destination.
+  - OPUS : Supports downloading OPUS datasets by specifying the dataset name and URL. You can also retrieve information about all available OPUS datasets using the `opus_info` function (available in `utils.py`).
 - **Preprocessing**:
-  - Rule-based filtering
-  - Semantic filtering
-  - Language detect filtering
+  - Rule-based filtering: involves deduplication, dropping empty segments, and removing HTML tags.
+  - Semantic filtering: evaluates the translation pairs with cosine similarity scores derived from sentence embedding models, using the SentenceTransformers library 
+  - Language detect filtering: discards segments that are unlikely to be in the expected language. Two language models are available; AfroLid and FastText. 
+  - Quality estimation filtering:  apply reference-free evaluation of the translation using Comet models and exclude segments that are lower than the threshold. 
 - **Quality Assessment**:
-  - Model-based quality estimation
-- **Merge and Push**:
-  - Choose dataset with good quality
+  - Estimates the translation quality of the preprocessed dataset using Comet model. 
+- **Merge, Deduplicate and Push**:
+  - Dedulicate agains test dataset to avoid overlaps
   - Combine all processed datasets into one
+  - Deduplicate globally to avoid same segments from datasets
   - Push to Hugging Face Hub
 
 ---
@@ -36,12 +38,9 @@ A unified pipeline to download, preprocess, assess the quality, merge, and push 
     Modify the `config.yaml` file to define your language pair, data sources, and pipeline settings.
 4. **Preprocess the dataset**
     ```bash
-    python process.py --config am_config.yaml
+    python process.py --config config.yaml
 
-5. **Merge the datasets**
-    ```bash
-    python merge.py --datasets dataset1 dataset2 ...
-6. **Push to Hugging Face Hub**
+5. **Push to Hugging Face Hub**
     ```bash
     python push_to_hub.py --dataset data
 
